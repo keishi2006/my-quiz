@@ -1,9 +1,9 @@
-// クイズデータの例
+// クイズデータの例（前回と同じ）
 const quizData = [
   {
     question: "日本の首都はどこ？",
     choices: ["東京", "大阪", "京都", "福岡"],
-    answer: 0 // 配列の0番目の選択肢（"東京"）が正解
+    answer: 0
   },
   {
     question: "イギリスの首都はどこ？",
@@ -24,19 +24,27 @@ let currentQuestionIndex = 0;
 let score = 0;
 
 function loadQuiz() {
-  // 現在の問題を取得
   const currentQuiz = quizData[currentQuestionIndex];
-  
-  // 問題文の表示
+
+  // Bootstrapの「card」を利用して問題を囲む
+  const card = document.createElement('div');
+  card.classList.add('card', 'p-3', 'mb-3'); 
+
+  // 問題文
   const questionElement = document.createElement('h2');
   questionElement.textContent = currentQuiz.question;
-  
+  questionElement.classList.add('mb-3'); 
+
   // 選択肢のボタンを作成
   const choicesList = document.createElement('div');
+  choicesList.classList.add('d-flex', 'flex-column', 'gap-2'); // 選択肢ボタン同士をスペースで区切る
+
   currentQuiz.choices.forEach((choice, index) => {
     const button = document.createElement('button');
     button.textContent = choice;
-    
+    // Bootstrapのボタンスタイル
+    button.classList.add('btn', 'btn-outline-primary');
+
     // ボタンをクリックしたときの処理
     button.addEventListener('click', () => {
       // 正解チェック
@@ -47,14 +55,17 @@ function loadQuiz() {
       currentQuestionIndex++;
       showNextQuestion();
     });
-    
+
     choicesList.appendChild(button);
   });
-  
-  // コンテナに問題文と選択肢を追加
-  quizContainer.innerHTML = ""; // 前の問題を消去
-  quizContainer.appendChild(questionElement);
-  quizContainer.appendChild(choicesList);
+
+  // カードに要素を追加
+  card.appendChild(questionElement);
+  card.appendChild(choicesList);
+
+  // 前の問題を消去して新しい問題を表示
+  quizContainer.innerHTML = "";
+  quizContainer.appendChild(card);
 }
 
 function showNextQuestion() {
@@ -67,8 +78,12 @@ function showNextQuestion() {
 
 function showResult() {
   quizContainer.innerHTML = "";
-  resultContainer.innerHTML = `<h2>結果発表！あなたの正解数は ${score} / ${quizData.length} です</h2>`;
+  resultContainer.innerHTML = `
+    <div class="alert alert-success" role="alert">
+      結果発表！あなたの正解数は ${score} / ${quizData.length} です
+    </div>
+  `;
 }
 
-// 最初の問題を読み込む
+// 最初の問題をロード
 loadQuiz();
