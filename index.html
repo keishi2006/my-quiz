@@ -3,16 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <title>My Quiz</title>
+  <!-- Bootstrap CSSのCDNを読み込む -->
+  <link 
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" 
+    rel="stylesheet"
+  >
 </head>
-<body>
-  <h1>クイズに挑戦！</h1>
-  
-  <!-- クイズの問題と選択肢を表示する場所 -->
-  <div id="quiz-container"></div>
-  
-  <!-- 結果表示用 -->
-  <div id="result"></div>
-  
+<body class="bg-light">
+
+  <!-- ナビゲーションバー (任意) -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">My Quiz</a>
+    </div>
+  </nav>
+
+  <!-- メインコンテンツ -->
+  <div class="container my-4">
+    <h1 class="text-center mb-4">クイズに挑戦！</h1>
+    
+    <!-- クイズの問題と選択肢を表示する場所 -->
+    <div id="quiz-container" class="mb-4"></div>
+
+    <!-- 結果表示用 -->
+    <div id="result" class="mt-4"></div>
+  </div>
+
+  <!-- Bootstrap JS (JavaScript)のCDNを読み込む -->
+  <script 
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js">
+  </script>
+
   <!-- quiz.jsを読み込む -->
   <script src="quiz.js"></script>
 </body>
