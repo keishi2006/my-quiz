@@ -2,8 +2,8 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>My Quiz (with Timer)</title>
-  <!-- Bootstrap CSS（CDN読み込みの例） -->
+  <title>Timer Test</title>
+  <!-- Bootstrap CSS (CDN) -->
   <link 
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" 
     rel="stylesheet"
@@ -20,25 +20,143 @@
   <div class="container my-4">
     <h1 class="text-center mb-4">クイズに挑戦！（制限時間あり）</h1>
     
-    <!-- タイマーの表示 -->
+    <!-- タイマー表示 -->
     <div class="d-flex justify-content-center mb-4">
       <div class="badge bg-warning text-dark p-3">
         残り時間: <span id="timer-seconds">10</span> 秒
       </div>
     </div>
 
-    <!-- クイズ本体表示エリア -->
+    <!-- クイズ本体 -->
     <div id="quiz-container"></div>
-    <!-- 結果表示エリア -->
+    <!-- 結果表示 -->
     <div id="result" class="mt-4"></div>
   </div>
 
-  <!-- Bootstrap JavaScript（CDN） -->
+  <!-- Bootstrap JS (CDN) -->
   <script 
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js">
   </script>
 
-  <!-- quiz.jsを読み込む -->
-  <script src="quiz.js"></script>
+  <script>
+  // ============================
+  // クイズとタイマーのJSコード
+  // ============================
+  const quizData = [
+    {
+      question: "日本の首都はどこ？",
+      choices: ["東京", "大阪", "京都", "福岡"],
+      answer: 0
+    },
+    {
+      question: "イギリスの首都はどこ？",
+      choices: ["リバプール", "マンチェスター", "ロンドン", "グラスゴー"],
+      answer: 2
+    },
+    {
+      question: "フランスの首都はどこ？",
+      choices: ["パリ", "ニース", "マルセイユ", "リヨン"],
+      answer: 0
+    }
+  ];
+
+  const quizContainer = document.getElementById('quiz-container');
+  const resultContainer = document.getElementById('result');
+  const timerDisplay = document.getElementById('timer-seconds');
+
+  let currentQuestionIndex = 0;
+  let score = 0;
+  let timeLimit = 10;   // 1問あたりの制限時間（秒）
+  let timerId = null;
+  let timeRemaining = 0;
+
+  function loadQuiz() {
+    const currentQuiz = quizData[currentQuestionIndex];
+    
+    // 問題表示のための要素
+    const card = document.createElement('div');
+    card.classList.add('card', 'p-3', 'mb-3');
+    
+    // 問題文
+    const questionElement = document.createElement('h2');
+    questionElement.textContent = currentQuiz.question;
+    questionElement.classList.add('mb-3');
+    
+    // 選択肢ボタン
+    const choicesList = document.createElement('div');
+    choicesList.classList.add('d-flex', 'flex-column', 'gap-2');
+    
+    currentQuiz.choices.forEach((choice, index) => {
+      const button = document.createElement('button');
+      button.textContent = choice;
+      button.classList.add('btn', 'btn-outline-primary');
+      
+      button.addEventListener('click', () => {
+        // 正解かどうか
+        if (index === currentQuiz.answer) {
+          score++;
+        }
+        stopTimer(); // タイマー停止
+        currentQuestionIndex++;
+        showNextQuestion();
+      });
+      choicesList.appendChild(button);
+    });
+    
+    card.appendChild(questionElement);
+    card.appendChild(choicesList);
+    
+    quizContainer.innerHTML = "";
+    quizContainer.appendChild(card);
+    
+    // タイマー開始
+    startTimer();
+  }
+
+  function showNextQuestion() {
+    if (currentQuestionIndex < quizData.length) {
+      loadQuiz();
+    } else {
+      showResult();
+    }
+  }
+
+  function showResult() {
+    quizContainer.innerHTML = "";
+    resultContainer.innerHTML = `
+      <div class="alert alert-success" role="alert">
+        結果発表！あなたの正解数は ${score} / ${quizData.length} です
+      </div>
+    `;
+    // タイマー表示を無効化
+    timerDisplay.textContent = "--";
+  }
+
+  function startTimer() {
+    timeRemaining = timeLimit;
+    timerDisplay.textContent = timeRemaining;
+    timerId = setInterval(() => {
+      timeRemaining--;
+      timerDisplay.textContent = timeRemaining;
+      if (timeRemaining <= 0) {
+        // 時間切れ
+        stopTimer();
+        currentQuestionIndex++;
+        showNextQuestion();
+      }
+    }, 1000);
+  }
+
+  function stopTimer() {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+  }
+
+  // 最初の問題を読み込み
+  loadQuiz();
+  </script>
+
 </body>
 </html>
